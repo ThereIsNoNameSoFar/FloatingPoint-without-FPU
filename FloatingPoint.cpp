@@ -157,13 +157,31 @@ void FloatingPoint::to_string(char* buff, uint32_t buff_size) const
 
 bool FloatingPoint::operator>(const FloatingPoint& second) const
 {
-    bool greaterSign = (this->get_sign() == 0 && second.get_sign() != 0);
+    if (this->get_sign() == 0 && second.get_sign() != 0) return true;
+
+    uint32_t value1 = this->value;
+    uint32_t value2 = second.value;
+    if(this->get_mantissa() == second.get_mantissa())
+    {
+    	while(get_value_len(value1) != get_value_len(value2))
+		{
+        	if(get_value_len(value1) > get_value_len(value2))
+        	{
+        		value2 *= 10;
+        	}
+        	else
+			{
+				value1 *= 10;
+			}
+		}
+    }
+
     bool greaterValue = (this->get_mantissa() > second.get_mantissa() ||
                         (this->get_mantissa() == second.get_mantissa() &&
-                         this->value > second.value));
+                         value1 > value2));
 
-    return (greaterSign ||
-            (this->get_sign() == 0 && greaterValue) ||
+
+    return ((this->get_sign() == 0 && greaterValue) ||
             (this->get_sign() != 0 && !greaterValue && *this != second));
 }
 
