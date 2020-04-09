@@ -111,7 +111,7 @@ int32_t FloatingPoint::numbers_alignment(const FloatingPoint& second, uint32_t& 
     int32_t max_offset = max(offset1, offset2);
     int32_t min_offset = min(offset1, offset2);
     max_offset_value = (offset1 > offset2) ? this->value : second.value;
-    min_offset_value = (offset1 < offset2) ? this->value : second.value;
+    min_offset_value = (offset1 <= offset2) ? this->value : second.value;
 
     while(min_offset < max_offset)
     {
