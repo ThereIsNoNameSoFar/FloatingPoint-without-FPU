@@ -195,9 +195,23 @@ FloatingPoint FloatingPoint::operator+(const FloatingPoint& second) const
 FloatingPoint FloatingPoint::operator*(const FloatingPoint& second) const
 {
     uint8_t sign = (this->get_sign() + second.get_sign()) % 2;
-    uint32_t value = this->value * second.value;
-    int32_t offset1 = int32_t(this->get_value_len() - 1) - int32_t(this->get_mantissa() - (1<<30));
-    int32_t offset2 = int32_t(second.get_value_len() - 1) - int32_t(second.get_mantissa() - (1<<30));
+    uint32_t value1 = this->value;
+    uint32_t value2 = second.value;
+    while(((value1*value2)/value2) != value1)
+    {
+    	if(get_value_len(value1) > get_value_len(value2))
+    	{
+    		value1 /= 10;
+    	}
+    	else
+    	{
+    		value2 /= 10;
+    	}
+    }
+    uint32_t value = value1 * value2;
+
+    int32_t offset1 = int32_t(get_value_len(value1) - 1) - int32_t(this->get_mantissa() - (1<<30));
+    int32_t offset2 = int32_t(get_value_len(value2) - 1) - int32_t(second.get_mantissa() - (1<<30));
     int32_t offset = offset1 + offset2;
     uint32_t mantissa = int32_t(get_value_len(value)) - 1 - offset + (1<<30);
     return FloatingPoint(sign, mantissa, value);
